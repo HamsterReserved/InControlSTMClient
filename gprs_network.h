@@ -54,12 +54,15 @@
 #define COMMAND_XIIC 2
 #define COMMAND_HTTPSETUP 3
 #define COMMAND_HTTPACTION 4
+// For anything else
+#define COMMAND_BUSY 5
 
 // Status (above)
 int modem_state;
 // Used for keep operaions "atomic" and answer in sync with request
 // Remember to clear this when answer is received.
 // We only allow commands to be executed when no other commands are pending.
+// Can be used for indicator updates also.
 int last_command_id;
 
 typedef struct {
@@ -71,7 +74,14 @@ typedef struct {
 
 void switch_state(int state);
 void report_data(SENSOR_INFO* snr);
-int is_network_available();
+void refresh_network_status();
 void connect_to_network();
-void fetch_self_name(char* buf);
+void disconnect_from_network();
+void request_self_name();
+void request_url(char* url);
+void request_signal_strength();
+void request_reg_status();
+void request_sim_status();
+void request_gprs_status();
+void request_connection_status();
 #endif
