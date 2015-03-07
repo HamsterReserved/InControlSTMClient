@@ -31,6 +31,37 @@
 #define SENSOR_NAME_BUFFER_SIZE 100
 #define SENSOR_TRIGGER_BUFFER_SIZE 500
 
+/* Local States */
+// Do OR on modem_state for new request
+// Do AND(NOT) on modem_state for each answer acoordingly
+
+// No response at all
+#define MODEM_STATE_FAIL 0
+// If returns OK for AT
+#define MODEM_STATE_ON 1
+// If +CCID=no ERROR for AT+CCID (fall back to ON if ERROR)
+#define MODEM_STATE_SIM_PRESENT 2
+// If +CSQ=(not 99)
+#define MODEM_STATE_IN_SERVICE 4
+// Returns +CREG=(0 or 5) THIS IS THE NORMAL STATE for other operations
+#define MODEM_STATE_REGISTERED 8
+#define MODEM_STATE_NORMAL MODEM_STATE_REGISTERED
+
+// Only list result-demanding and active-issued commands.
+// Don't care +CSQ/+CCID etc.
+// See last_command_id
+#define COMMAND_CMGS 1
+#define COMMAND_XIIC 2
+#define COMMAND_HTTPSETUP 3
+#define COMMAND_HTTPACTION 4
+
+// Status (above)
+int modem_state;
+// Used for keep operaions "atomic" and answer in sync with request
+// Remember to clear this when answer is received.
+// We only allow commands to be executed when no other commands are pending.
+int last_command_id;
+
 typedef struct {
     int sensor_type;
     char sensor_name[SENSOR_NAME_BUFFER_SIZE];

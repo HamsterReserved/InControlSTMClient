@@ -13,7 +13,9 @@ void switch_state(int state){
     // Make sure we only accept new Android clients when user agrees.
 }
 
-int is_network_available() { // AT+XIIC? if IP is available
+int refresh_network_status() {
+    // Refresh all stats (signal, GPRS etc)
+    // Do this before ANY operation!
     return 0;
 }
 
@@ -23,7 +25,20 @@ void connect_to_network() {
 
 }
 
-void fetch_self_name(char* buf){
+void disconnect_from_network() {
+
+}
+
+void request_self_name(){
     // Poor boy, you don't even know yourself's name.
+
+}
+
+void request_url(char* url) {
+    // Should handle results in INT service
+
+}
+
+void request_signal_strength() {
 
 }
