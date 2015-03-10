@@ -1,4 +1,7 @@
-
+/*
+ By Hamster on 2015/03/10 (not first created)
+ Common/basic control and interrupt handler for modem.
+ */
 #include "modem_common.h"
 #include "modem_vars.h"
 
@@ -27,7 +30,6 @@ void send_command(const char* buf) {
         delay(10); // Wait until all other commands are done
         log(__FILE__ ": waiting for other command");
     }
-    // TODO Add a send text which doesn't set this
     set_command(COMMAND_BUSY); // We don't know what's happening but it's just busy
 
     // F says printf does the trick. I just keep this in case anything bad happens.
@@ -73,28 +75,35 @@ void connect_to_network() {
     int retry_count = 0;
     while (retry_count < MAX_RETRY_COUNT) {
         if (modem_state == MODEM_STATE_NORMAL) {
+            // No need to delay manually.
+            // We can make sure that one command will be
+            // executed after last one returns "OK" or "ERROR"
             send_command("AT+CGDCONT = 1, \"IP\", \"" DEFAULT_APN "\"\r");
             send_command("AT+CGATT=1\r");
             send_command_with_id("AT+XIIC=1\r", COMMAND_XIIC);
+            // Same as above. Auto waiting for result.
+            request_gprs_status(); // This is async
+            delay(100); // Wait for result
+            if (modem_state == MODEM_STATE_GPRS_CONNECTED) return;
         }
-        delay(1000); // Give it chances to sort that out before retry
+        delay(1000); // Give it chances to sort network issue before retry
         retry_count++;
     }
 }
 
 void disconnect_from_network() {
-
+    send_command("AT+CGATT=0\r"); // Should be enough
 }
 
 void refresh_modem_status() {
-    // Refresh all stats (signal, GPRS etc)
-    // Do this before ANY operation!
-    // Call every refresh function
     // NOTE: since operations are atomic, it's time-costly to refresh all
-    // so I kept them separated if we want only one stat
+    // so I kept them separated if we want only one stat (e.g. in connect_to_network)
     request_sim_status();
     request_signal_strength();
     request_reg_status();
     request_gprs_status();
-    // refresh connection if we are manually connecting
+}
+
+void process_result(const char* buf) {
+
 }

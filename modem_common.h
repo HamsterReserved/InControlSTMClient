@@ -30,6 +30,7 @@
 // Returns +CREG=(0 or 5) THIS IS THE NORMAL STATE for other operations
 #define MODEM_STATE_REGISTERED 8
 #define MODEM_STATE_NORMAL MODEM_STATE_REGISTERED
+#define MODEM_STATE_GPRS_CONNECTED 16
 
 // Only list result-demanding and active-issued commands.
 // Don't care +CSQ/+CCID etc.
@@ -71,5 +72,9 @@ void request_connection_status();
 void refresh_modem_status();
 void connect_to_network();
 void disconnect_from_network();
+
+// Call from interrupt handler.
+// buf is result from port
+void process_result(const char* buf);
 
 #endif
