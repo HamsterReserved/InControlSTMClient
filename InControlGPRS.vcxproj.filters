@@ -27,6 +27,9 @@
     <ClCompile Include="modem_common.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="main_test.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sms.h">
@@ -39,6 +42,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="modem_common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sensor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="modem_vars.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

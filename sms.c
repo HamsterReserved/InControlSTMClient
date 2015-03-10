@@ -55,6 +55,7 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
 
 	char end_of_message[] = {0x0A, 0x00}; // 0x00 is string end
 
+    
     if (is_chinese) {
         memset(service_number_buffer, 0, NUMBER_BUFFER_SIZE); // Clear things or strcat will fail
         memset(target_phone_num_buffer, 0, NUMBER_BUFFER_SIZE);
@@ -92,55 +93,39 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
         head_length = strlen(pdu_head) - strlen(service_number_buffer);
         sprintf(head_length_buffer, "%d", head_length);
 
-        send_command("AT+CMGF=1\n"); // Set PDU mode
+        send_command("AT+CMGF=0\r"); // Set PDU mode
         delay(50);
         // TODO Check for OK
         
-        send_command("AT+CMGS=");
-        send_command(head_length_buffer);
-        send_command("\n");
+        send_text("AT+CMGS=");
+        send_text(head_length_buffer);
+        send_text("\r");
+        set_command(COMMAND_CMGS);
         // AT+CMGS=40 etc
 
         delay(50); // Wait for >
-        send_command(pdu_head);
-        send_command(msg_buffer);
+        send_text(pdu_head);
+        send_text(msg_buffer);
+        // No need to \r. msg_buffer contains it.
         // Wait for OK in calling functions
     } else {
         // English message. Using text mode is enough.
         head_length = strlen(sms->dest_number);
         sprintf(head_length_buffer, "%d", head_length);
 
-        send_command("AT+CMGF=1\n"); // Set text mode
+        send_command("AT+CMGF=1\r"); // Set text mode
         delay(50);
-        send_command("AT+CMGS=");
-        send_command(sms->dest_number);
-        send_command("\n");
+        send_text("AT+CMGS=");
+        send_text(sms->dest_number);
+        send_text("\r");
+        set_command(COMMAND_CMGS);
         // AT+CMGS=+8615527270000
         
         delay(50); // Wait for >
-        send_command(sms->content);
-        send_command(end_of_message);
+        send_text(sms->content);
+        send_text(end_of_message);
         // Wait for OK in calling functions
     }
-}
-
-int main() { // For test
-	SMS_SUBMIT_PARAM sms;
-	char content_chs[]="¹þ¹þ";
-    char content_eng[] = "hehe";
-	char sender[]="+8615527270000";
-	char center[]="+8613000713500";
-	sms.content=content_chs;
-	sms.dest_number=sender;
-	sms.service_center=center;
-
-	send_sms(NULL, &sms);
-
-	sms.service_center=NULL;
-	send_sms(NULL, &sms);
-
-    sms.content = content_eng;
-    send_sms(NULL, &sms);
 }
 
 /*

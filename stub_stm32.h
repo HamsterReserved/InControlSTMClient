@@ -8,4 +8,5 @@
 
 void delay(long mills);
 void read_device_id(char* buf); // Read device ID into buf
+void log(const char* logstr);
 #endif

@@ -78,6 +78,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="gprs_network.c" />
+    <ClCompile Include="main_test.c" />
     <ClCompile Include="modem_common.c" />
     <ClCompile Include="sms.c" />
     <ClCompile Include="stub_stm32.c" />
@@ -85,6 +86,8 @@
   <ItemGroup>
     <ClInclude Include="gprs_network.h" />
     <ClInclude Include="modem_common.h" />
+    <ClInclude Include="modem_vars.h" />
+    <ClInclude Include="sensor.h" />
     <ClInclude Include="sms.h" />
     <ClInclude Include="stub_stm32.h" />
   </ItemGroup>
