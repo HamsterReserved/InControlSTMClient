@@ -25,18 +25,6 @@ void send_text(const char* buf) {
 
 /********* DO NOT ATTEMPT TO ADD \r\n IN SEND_COMMAND *************/
 
-void send_command(const char* buf) {
-    while (last_command_id != COMMAND_NONE) {
-        delay(10); // Wait until all other commands are done
-        log(__FILE__ ": waiting for other command");
-    }
-    set_command(COMMAND_BUSY); // We don't know what's happening but it's just busy
-
-    // F says printf does the trick. I just keep this in case anything bad happens.
-    printf(buf);
-}
-
-// Why doesn't C support overload?
 void send_command_with_id(const char* buf, int custom_command_id) {
     while (last_command_id != COMMAND_NONE) {
         delay(10); // Wait until all other commands are done
@@ -46,6 +34,11 @@ void send_command_with_id(const char* buf, int custom_command_id) {
 
     // F says printf does the trick. I just keep this in case anything bad happens.
     printf(buf);
+}
+
+// Why doesn't C support overload?
+void send_command(const char* buf) {
+    send_command_with_id(buf, COMMAND_BUSY);
 }
 
 void request_signal_strength() {
@@ -105,5 +98,5 @@ void refresh_modem_status() {
 }
 
 void process_result(const char* buf) {
-
+    // strncmp first several bytes
 }
