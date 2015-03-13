@@ -13,7 +13,7 @@
 /* Local States */
 
 // No response at all
-#define MODEM_STATE_FAIL -1
+#define MODEM_STATE_FAIL 0
 
 // If returns OK for AT
 // If we recerive "OK" without command prefix, just set
@@ -22,24 +22,24 @@
 #define MODEM_STATE_ON 1
 
 // If +CCID=no ERROR for AT+CCID (fall back to ON if ERROR)
-#define MODEM_STATE_SIM_PRESENT 2
+#define MODEM_STATE_SIM_PRESENT (1 << 1)
 
 // If +CSQ=(not 99)
-#define MODEM_STATE_IN_SERVICE 4
+#define MODEM_STATE_IN_SERVICE (1 << 2)
 
 // Returns +CREG=(0 or 5) THIS IS THE NORMAL STATE for other operations
-#define MODEM_STATE_REGISTERED 8
+#define MODEM_STATE_REGISTERED (1 << 3)
 #define MODEM_STATE_NORMAL MODEM_STATE_REGISTERED
-#define MODEM_STATE_GPRS_CONNECTED 16
+#define MODEM_STATE_GPRS_CONNECTED (1 << 4)
 
 // Only list result-demanding and active-issued commands.
 // Don't care +CSQ/+CCID etc.
 // See last_command_id
 #define COMMAND_NONE 0
 #define COMMAND_CMGS 1
-#define COMMAND_XIIC (1 < 1)
-#define COMMAND_HTTPSETUP (1 < 2)
-#define COMMAND_HTTPACTION (1 < 3)
+#define COMMAND_XIIC (1 << 1)
+#define COMMAND_HTTPSETUP (1 << 2)
+#define COMMAND_HTTPACTION (1 << 3)
 // For anything else
 #define COMMAND_BUSY -1
 
@@ -72,6 +72,14 @@ void request_connection_status();
 void refresh_modem_status();
 void connect_to_network();
 void disconnect_from_network();
+
+// OOP?
+int is_sim_present();
+int is_network_registered();
+int is_gprs_connected();
+int get_signal_strength();
+int get_last_error_command();
+// Do we need to get MNC?
 
 // Call from interrupt handler.
 // buf is result from port

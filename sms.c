@@ -145,5 +145,5 @@ int check_if_chinese_character(const char* in_str) {
  * TODO Not implemented. Should convert ASCII Chinese to UCS2
  */
 void ucs2_encode_string(char* out, const char* in) {
-    out = in;
+    out = (char*) in;
 }
