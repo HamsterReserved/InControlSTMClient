@@ -50,5 +50,8 @@
     <ClInclude Include="modem_vars.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="gprs_network_private.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

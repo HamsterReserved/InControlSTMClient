@@ -6,6 +6,8 @@
 #ifndef STUB_STM32_H
 #define STUB_STM32_H
 
+#define DEVICE_ID_LENGTH 20
+
 void delay(long mills);
 void read_device_id(char* buf); // Read device ID into buf
 void log(const char* logstr);

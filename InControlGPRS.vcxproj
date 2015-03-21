@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gprs_network.h" />
+    <ClInclude Include="gprs_network_private.h" />
     <ClInclude Include="modem_common.h" />
     <ClInclude Include="modem_vars.h" />
     <ClInclude Include="sensor.h" />
