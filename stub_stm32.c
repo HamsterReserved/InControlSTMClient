@@ -1,6 +1,13 @@
+/*
+ * This module is for testing code on Win32 platform
+ * Thus I call it STUB_stm32
+ * If we are really onto STM32, these functions need to be
+ * implemented.
+ */
 #include "stub_stm32.h"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 void delay(long mills) {
 
@@ -23,4 +30,8 @@ void update_display() {
     // Conclusion: NEVER CALL THIS IN OTHER PLACE!
     //
     // Remember to check get_last_error_command() to show an exclamation mark!
+}
+
+long get_current_time() {
+    return time(0);
 }

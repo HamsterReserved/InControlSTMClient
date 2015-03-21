@@ -6,6 +6,7 @@
 #include <string.h>
 #include "modem_common.h"
 #include "modem_vars.h"
+#include "gprs_network.h"
 
 // =0 means buf=a
 #define BUF_STRNCMP(a) (strncmp(buf, (a), strlen((a))))
@@ -222,6 +223,8 @@ void process_result(const char* buf) {
         process_creg(buf);
     } else if (BUF_STRNCMP("+CGATT") == 0) {
         process_cgatt(buf);
+    } else if (BUF_STRNCMP("+HTTPRECV") == 0) {
+        process_http(buf);
     } else if (BUF_STRNCMP("ERROR") == 0) {
         process_error();
     } else if (BUF_STRNCMP("OK") == 0) {

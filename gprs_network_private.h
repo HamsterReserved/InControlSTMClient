@@ -22,11 +22,21 @@ Internal use for GPRS Network
 #define REQUEST_TYPE_SERVER_NAME 2
 #define REQUEST_TYPE_SERVER_SENSOR_LIST 3
 
+#define PARAM_KEY_DEVICE_ID "device_id"
+#define PARAM_KEY_DEVICE_TYPE "device_type"
+#define PARAM_KEY_REQUEST_TYPE "request_type"
+#define PARAM_KEY_SENSOR_ID "sensor_id"
+// This is not "sensor_date"!
+#define PARAM_KEY_SENSOR_DATE "info_date"
+#define PARAM_KEY_SENSOR_VALUE "sensor_value"
+#define PARAM_KEY_SENSOR_NAME "sensor_name"
+#define PARAM_KEY_SENSOR_TYPE "sensor_type"
+
 #define STATE_NORMAL 0
 #define STATE_NEW_CLIENT 1
 //#define STATE_NEW_SENSOR 2
 
-#define URL_BUFFER_LENGTH 512
+#define URL_BUFFER_LENGTH 2048
 #define PARAM_BUFFER_LENGTH 100
 
 // State machine

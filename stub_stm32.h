@@ -9,7 +9,10 @@
 #define DEVICE_ID_LENGTH 20
 
 void delay(long mills);
-void read_device_id(char* buf); // Read device ID into buf
+// Read device ID into buf
+void read_device_id(char* buf);
 void log(const char* logstr);
 void update_display();
+
+long get_current_time();
 #endif
