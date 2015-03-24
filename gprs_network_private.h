@@ -15,8 +15,11 @@ Internal use for GPRS Network
 
 /* Remember to keep in sync with PHP and Android! */
 
+// Place holder
+#define REQUEST_TYPE_NONE 0
 //#define REQUEST_TYPE_ADD_NEW_DEVICE 99 Only used in factory
 #define REQUEST_TYPE_SWITCH_STATE 97
+// USER_REGISTRATION is used on Android I suppose?
 #define REQUEST_TYPE_USER_REGISTRATION 98
 #define REQUEST_TYPE_REPORT 1
 #define REQUEST_TYPE_SERVER_NAME 2
@@ -31,6 +34,7 @@ Internal use for GPRS Network
 #define PARAM_KEY_SENSOR_VALUE "sensor_value"
 #define PARAM_KEY_SENSOR_NAME "sensor_name"
 #define PARAM_KEY_SENSOR_TYPE "sensor_type"
+#define PARAM_KEY_STATE "state"
 
 #define STATE_NORMAL 0
 #define STATE_NEW_CLIENT 1
@@ -38,8 +42,15 @@ Internal use for GPRS Network
 
 #define URL_BUFFER_LENGTH 2048
 #define PARAM_BUFFER_LENGTH 100
+#define DEVICE_NAME_BUFFER_LENGTH 100
 
 // State machine
-int last_request;
+int last_request = REQUEST_TYPE_NONE;
+int last_err_request = REQUEST_TYPE_NONE;
+
+// Whether we can accept new Android client
+int state = STATE_NORMAL;
+
+char* device_name[DEVICE_NAME_BUFFER_LENGTH];
 
 #endif

@@ -8,13 +8,21 @@
 
 #include "sensor.h"
 
-void switch_state(int state);
+// OOP-like things
 void set_last_request(int request);
 void clear_last_request();
 int get_last_request();
+void set_last_err_request(int request);
+int get_last_err_request();
+void set_state(int state); // Not modem hardware state
+int get_state();
+void set_device_name(const char* buf);
+void get_device_name(char* dest_buf);
+
+void switch_state(int state);
 void report_data(SENSOR_INFO* snr);
 void request_self_name();
-void request_sensor_trigger(int sensor_id);
+void request_sensor_list();
 void request_url(char* url);
 void process_http(const char* buf);
 

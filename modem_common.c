@@ -117,6 +117,8 @@ int get_signal_strength() { return signal_strength; }
 
 int get_last_error_command() { return last_err_command; }
 
+void set_last_error_command(int command_id) { last_err_command = command_id; }
+
 /* These process_*  are for internal use only. No need to spam header file. */
 void process_csq(const char* buf) {
     // <CRLF>+CSQ: 1, 99<CRLF>

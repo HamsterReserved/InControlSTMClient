@@ -79,6 +79,7 @@ int is_network_registered();
 int is_gprs_connected();
 int get_signal_strength();
 int get_last_error_command();
+void set_last_error_command(int command_id);
 // Do we need to get MNC?
 
 // Call from interrupt handler.
