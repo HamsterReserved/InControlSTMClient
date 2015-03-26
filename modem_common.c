@@ -1,11 +1,32 @@
 /*
  By Hamster on 2015/03/10 (not first created)
  Common/basic control and interrupt handler for modem.
+
+ Notes about last_cmd and last_err_cmd:
+
+ Every time a command is sent, last_cmd is set.
+ It will NOT be cleared until next command is sent.
+
+ Every time we receive an "ERROR", last_err_cmd is
+ set. It WILL be cleared when next command is sent.
+
+ Difference from gprs_network is described there.
+
+ Example"
+    last_cmd=HTTPACTION last_err=NONE
+        means we did a network request recently and
+        it succeeded OR it HAS NOT FINISHED
+    last_cmd=HTTPACTION last_err=HTTPACTION
+        means we did a network request but it
+        failed.
+    last_cmd=CREG last_err=CCID
+        means CREG has not returned (is that possible?)
+        and another CCID failed previously.
  */
 
 #include <string.h>
 #include "modem_common.h"
-#include "modem_vars.h"
+#include "modem_common_private.h"
 #include "gprs_network.h"
 
 // =0 means buf=a
@@ -197,7 +218,7 @@ void process_error() {
         case COMMAND_HTTPACTION:
         case COMMAND_HTTPSETUP:
         case COMMAND_XIIC:
-            last_err_command = last_command_id;
+            set_last_error_command(last_command_id);
             break;
     }
 }
@@ -205,13 +226,16 @@ void process_error() {
 void process_ok() {
     log("last command returns OK\n");
     clear_command(last_command_id);
-    last_err_command = COMMAND_NONE;
+    set_last_error_command(COMMAND_NONE);
+    process_http_ok();
     // I guess this should be NONE when the cmd is sent
     // and operations are atomic
 }
 
-void process_result(const char* buf) {
+void process_result_common(const char* buf) {
     // Trim first?
+    // Called when \r\n, so process_http is added here
+    // NOTE: HTTP standard says \r\n(CRLF) after each line...
     modem_state |= MODEM_STATE_ON; // Indicate it's alive.
     if (BUF_STRNCMP("+CSQ") == 0) {
         process_csq(buf);
@@ -231,6 +255,9 @@ void process_result(const char* buf) {
         process_error();
     } else if (BUF_STRNCMP("OK") == 0) {
         process_ok();
+    } else { // Who knows? :-)
+        process_http(buf);
     }
+    // Error mark is cleared in process_*
     update_display();
 }

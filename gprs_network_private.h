@@ -51,6 +51,6 @@ int last_err_request = REQUEST_TYPE_NONE;
 // Whether we can accept new Android client
 int state = STATE_NORMAL;
 
-char* device_name[DEVICE_NAME_BUFFER_LENGTH];
+char device_name[DEVICE_NAME_BUFFER_LENGTH];
 
 #endif

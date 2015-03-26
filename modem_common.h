@@ -84,6 +84,6 @@ void set_last_error_command(int command_id);
 
 // Call from interrupt handler.
 // buf is result from port
-void process_result(const char* buf);
+void process_result_common(const char* buf);
 
 #endif

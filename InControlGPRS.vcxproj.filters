@@ -30,6 +30,9 @@
     <ClCompile Include="main_test.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="sensor.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sms.h">
@@ -47,10 +50,10 @@
     <ClInclude Include="sensor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="modem_vars.h">
+    <ClInclude Include="gprs_network_private.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="gprs_network_private.h">
+    <ClInclude Include="modem_common_private.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

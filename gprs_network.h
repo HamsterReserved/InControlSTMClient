@@ -25,5 +25,6 @@ void request_self_name();
 void request_sensor_list();
 void request_url(char* url);
 void process_http(const char* buf);
+void process_http_ok();
 
 #endif
