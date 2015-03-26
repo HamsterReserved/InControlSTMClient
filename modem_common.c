@@ -49,10 +49,14 @@ void clear_command(int command_id) {
 /********* DO NOT ATTEMPT TO ADD \r\n IN SEND_COMMAND *************/
 
 void send_command_with_id(const char* buf, int custom_command_id) {
+#ifndef DEBUG
     while (last_command_id != COMMAND_NONE) {
         delay(10); // Wait until all other commands are done
         log(__FILE__ ": waiting for other command");
     }
+#else
+    log(__FILE__ ": debug mode, skipped waiting for another command");
+#endif
     set_command(custom_command_id);
     last_err_command = COMMAND_NONE; // We are on the new way!
 

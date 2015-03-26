@@ -25,6 +25,9 @@
 
           last_req=REPORT, last_err_req=NONE
     means we did a report recently and it succeeded.
+
+ ABOUT SENSOR NAME: Default sensor name MUST NOT contain spaces
+    or other URL unfriendly things!
 */
 #include "stub_stm32.h"
 #include "gprs_network.h"
@@ -44,17 +47,10 @@
     strcat((buf), (name)); \
     strcat((buf), "&");
 
-// Self-explanatory. Same as __stringify
-// If x is expression,it will be evaluated
-// THATS REALLY SMART!
-#define _INT_STRINGIFY(x) #x
-#define STRINGIFY(x) _INT_STRINGIFY(x)
-
 #define BUF_STRNCMP(a) (strncmp(buf, (a), strlen((a))))
 
 // used in process_http function
 char is_http_header_received = 0;
-
 
 // State machine
 void set_last_request(int request) { last_request = request; }
@@ -70,6 +66,28 @@ void set_device_name(const char* buf) { strcpy(device_name, buf); }
 
 void get_device_name(char* dest_buf) { strcpy(dest_buf, device_name); }
 
+void append_parameter_int(char* buf, char* key, unsigned int value) {
+    char digits[12] = "\0\0\0\0\0\0\0\0\0\0\0\0"; // 2147483647 with 0
+    unsigned int now = value;
+    int digit = 0;
+    int i = 11;
+    int j = 0;
+    char tmp; // swap
+
+    // say value = 1024
+    while (digits[i--] = now % 10 + '0', now /= 10) {}
+    // digits is "\0\0....1024"
+
+    while (i++ < 11) {
+        tmp = digits[i];
+        digits[i] = digits[j];
+        digits[j] = tmp;
+        j++;
+    }
+
+    APPEND_PARAMETER(buf, key, digits);
+}
+
 void report_data(SENSOR_INFO* snr) {
     char id_buf[DEVICE_ID_LENGTH] = "";
     char url_buf[URL_BUFFER_LENGTH] = "";
@@ -77,12 +95,12 @@ void report_data(SENSOR_INFO* snr) {
 
     BUILD_URL_BODY(url_buf);
     APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_ID, id_buf);
-    APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_TYPE, STRINGIFY(DEVICE_TYPE));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_REQUEST_TYPE, STRINGIFY(REQUEST_TYPE_REPORT));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_SENSOR_ID, STRINGIFY(snr->sensor_name));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_SENSOR_DATE, STRINGIFY(get_current_time()));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_SENSOR_VALUE, STRINGIFY(snr->sensor_value));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_SENSOR_TYPE, STRINGIFY(snr->sensor_type));
+    append_parameter_int(url_buf, PARAM_KEY_DEVICE_TYPE, DEVICE_TYPE);
+    append_parameter_int(url_buf, PARAM_KEY_REQUEST_TYPE, REQUEST_TYPE_REPORT);
+    append_parameter_int(url_buf, PARAM_KEY_SENSOR_ID, snr->sensor_id);
+    append_parameter_int(url_buf, PARAM_KEY_SENSOR_DATE, get_current_time());
+    append_parameter_int(url_buf, PARAM_KEY_SENSOR_VALUE, snr->sensor_value);
+    append_parameter_int(url_buf, PARAM_KEY_SENSOR_TYPE, snr->sensor_type);
     if (snr->sensor_name[0] != 0) {
         // TODO initialize sensors array on boot
         APPEND_PARAMETER(url_buf, PARAM_KEY_SENSOR_NAME, snr->sensor_name);
@@ -101,9 +119,9 @@ void switch_state(int state){
 
     BUILD_URL_BODY(url_buf);
     APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_ID, id_buf);
-    APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_TYPE, STRINGIFY(DEVICE_TYPE));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_REQUEST_TYPE, STRINGIFY(REQUEST_TYPE_SWITCH_STATE));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_STATE, STRINGIFY(state));
+    append_parameter_int(url_buf, PARAM_KEY_DEVICE_TYPE, DEVICE_TYPE);
+    append_parameter_int(url_buf, PARAM_KEY_REQUEST_TYPE, REQUEST_TYPE_SWITCH_STATE);
+    append_parameter_int(url_buf, PARAM_KEY_STATE, state);
 
     request_url(url_buf);
     set_last_request(REQUEST_TYPE_SWITCH_STATE);
@@ -117,8 +135,8 @@ void request_self_name() {
 
     BUILD_URL_BODY(url_buf);
     APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_ID, id_buf);
-    APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_TYPE, STRINGIFY(DEVICE_TYPE));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_REQUEST_TYPE, STRINGIFY(REQUEST_TYPE_SERVER_NAME));
+    append_parameter_int(url_buf, PARAM_KEY_DEVICE_TYPE, DEVICE_TYPE);
+    append_parameter_int(url_buf, PARAM_KEY_REQUEST_TYPE, REQUEST_TYPE_SERVER_NAME);
 
     request_url(url_buf);
     set_last_request(REQUEST_TYPE_SERVER_NAME);
@@ -132,9 +150,9 @@ void request_sensor_list() {
 
     BUILD_URL_BODY(url_buf);
     APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_ID, id_buf);
-    APPEND_PARAMETER(url_buf, PARAM_KEY_DEVICE_TYPE, STRINGIFY(DEVICE_TYPE));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_REQUEST_TYPE, STRINGIFY(REQUEST_TYPE_SERVER_SENSOR_LIST));
-    APPEND_PARAMETER(url_buf, PARAM_KEY_STATE, STRINGIFY(state));
+    append_parameter_int(url_buf, PARAM_KEY_DEVICE_TYPE, DEVICE_TYPE);
+    append_parameter_int(url_buf, PARAM_KEY_REQUEST_TYPE, REQUEST_TYPE_SERVER_SENSOR_LIST);
+    append_parameter_int(url_buf, PARAM_KEY_STATE, state);
 
     request_url(url_buf);
     set_last_request(REQUEST_TYPE_SERVER_SENSOR_LIST);
@@ -144,7 +162,10 @@ void request_sensor_list() {
 void request_url(char* url) {
     // Should handle results in INT service
     char buf[URL_BUFFER_LENGTH + 17] = "AT+HTTPPARA=url,"; // AT+HTTPPARA=url,...\r
-    
+    int and_at = strlen(url) - 1;
+
+    if (url[and_at] == '&') url[and_at] = 0; // trailing &
+
     strcat(buf, url);
     strcat(buf, "\r");
     send_command(buf);

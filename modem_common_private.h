@@ -9,6 +9,7 @@
 #define MODEM_VARS_H
 
 #include "modem_common.h"
+#include "global_config.h"
 
 // Status (see above h)
 int modem_state = 0;

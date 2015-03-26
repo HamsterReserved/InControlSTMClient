@@ -15,8 +15,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define DEBUG
-
 /************************************************************************/
 /* Invert a byte array ((+) 86 15 52 72 70 00 0F -> 68 51 25 27 07 00 F0)
 /* NOTE! 15527270000 is TEXT!

@@ -9,6 +9,7 @@
 // For printf
 #include <stdio.h>
 #include "stub_stm32.h"
+#include "global_config.h"
 
 /* Local States */
 

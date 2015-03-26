@@ -85,6 +85,7 @@
     <ClCompile Include="stub_stm32.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="global_config.h" />
     <ClInclude Include="gprs_network.h" />
     <ClInclude Include="gprs_network_private.h" />
     <ClInclude Include="modem_common.h" />

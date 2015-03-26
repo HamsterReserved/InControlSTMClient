@@ -3,6 +3,8 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
+#include "global_config.h"
+
 #define SENSOR_TYPE_LIGHT 0
 #define SENSOR_TYPE_ELECTRICITY 1
 #define SENSOR_TYPE_MOTION 2

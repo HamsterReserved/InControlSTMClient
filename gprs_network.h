@@ -7,6 +7,11 @@
 #define GPRS_NETWORK_H
 
 #include "sensor.h"
+#include "global_config.h"
+
+#define STATE_NORMAL 0
+#define STATE_NEW_CLIENT 1
+//#define STATE_NEW_SENSOR 2
 
 // OOP-like things
 void set_last_request(int request);

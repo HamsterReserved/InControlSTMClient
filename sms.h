@@ -14,6 +14,8 @@
 #define PDU_HEAD_BUFFER_SIZE 300
 #define MESSAGE_BUFFER_SIZE 200
 
+#include "global_config.h"
+
 typedef struct {
     char* dest_number; // Destination phone number (with +86) in TEXT. Currently supports China operators only. (8 bytes length)
     char* service_center; // SMS service center. Will set 00 for SCA if null in TEXT. Chinese only for now.

@@ -56,5 +56,8 @@
     <ClInclude Include="modem_common_private.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="global_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

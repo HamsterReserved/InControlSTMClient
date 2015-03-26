@@ -8,6 +8,8 @@
 
 #define DEVICE_ID_LENGTH 20
 
+#include "global_config.h"
+
 void delay(long mills);
 // Read device ID into buf
 void read_device_id(char* buf);

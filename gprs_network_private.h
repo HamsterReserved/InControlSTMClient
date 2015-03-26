@@ -6,7 +6,7 @@ Internal use for GPRS Network
 #ifndef GPRS_NETWORK_PRIVATE_H
 #define GPRS_NETWORK_PRIVATE_H
 
-#include "sensor.h"
+#include "global_config.h"
 
 #define INCONTROL_API_URL "http://incontrol.sinaapp.com/incontrol_api.php"
 // 1=Control Center 2=Android Client
@@ -35,10 +35,6 @@ Internal use for GPRS Network
 #define PARAM_KEY_SENSOR_NAME "sensor_name"
 #define PARAM_KEY_SENSOR_TYPE "sensor_type"
 #define PARAM_KEY_STATE "state"
-
-#define STATE_NORMAL 0
-#define STATE_NEW_CLIENT 1
-//#define STATE_NEW_SENSOR 2
 
 #define URL_BUFFER_LENGTH 2048
 #define PARAM_BUFFER_LENGTH 100
