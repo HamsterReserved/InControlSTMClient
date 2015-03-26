@@ -19,7 +19,9 @@ void read_device_id(char *buf) {
 }
 
 void log(const char* logstr) {
+#ifdef LOG_ENABLED
     printf("LOG: %s\n", logstr);
+#endif
 }
 
 void update_display() {

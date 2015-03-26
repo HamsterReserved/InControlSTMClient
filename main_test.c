@@ -9,7 +9,7 @@
 void test_sms() {
     SMS_SUBMIT_PARAM sms;
     char content_chs[] = "¹þ¹þ";
-    char content_eng[] = "hehe";
+    char content_eng[] = "hello";
     char sender[] = "+8615527270000";
     char center[] = "+8613000713500";
     sms.content = content_chs;
@@ -52,7 +52,7 @@ void test_gprs() {
     clear_command(COMMAND_BUSY);
 
     test_snr.sensor_id = 1008611;
-    strcpy(test_snr.sensor_name, "Test sensor");
+    strcpy(test_snr.sensor_name, "Test_sensor"); // NO SPACE!
     test_snr.sensor_type = SENSOR_TYPE_ELECTRICITY;
     test_snr.sensor_value = 100;
 

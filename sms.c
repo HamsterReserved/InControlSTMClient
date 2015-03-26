@@ -87,8 +87,9 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
         strcat(msg_buffer, end_of_message); // famous 0x0A
         // PDU content ends here
         
-        head_length = strlen(pdu_head) - strlen(service_number_buffer);
-        sprintf(head_length_buffer, "%d", head_length);
+        head_length = strlen(pdu_head) - strlen(service_number_buffer)
+            + strlen(msg_buffer) - 2; // - 0x0d0a
+        sprintf(head_length_buffer, "%d", head_length / 2);
         
         send_command("AT+CMGF=0\r"); // Set PDU mode
         delay(50);
