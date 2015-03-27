@@ -2,6 +2,16 @@
  By Hamster on 2015/03/10 (not first created)
  Common/basic control and interrupt handler for modem.
 
+ Notes about calling sequence:
+
+ Step 1. Call request_*
+    eg. request_network_operator();
+ Step 2. Wait for several time (100ms etc)
+    eg. delay(100);
+ Step 3. Call get_*
+    eg. op = get_network_operator();
+
+
  Notes about last_cmd and last_err_cmd:
 
  Every time a command is sent, last_cmd is set.
