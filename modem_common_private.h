@@ -34,4 +34,8 @@ int last_err_command = COMMAND_NONE;
 // >= 28 : >= -57 dBm
 int signal_strength = 0;
 
+// -1=Unknown
+// 0=China Unicom
+// 1=China Mobile
+int network_operator = -1;
 #endif

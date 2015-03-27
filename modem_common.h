@@ -34,13 +34,16 @@
 #define MODEM_STATE_GPRS_CONNECTED (1 << 4)
 
 // Only list result-demanding and active-issued commands.
-// Don't care +CSQ/+CCID etc.
+// Don't care +CSQ.
+// Those which return ERROR without +xxx prefix need this.
 // See last_command_id
 #define COMMAND_NONE 0
 #define COMMAND_CMGS 1
 #define COMMAND_XIIC (1 << 1)
 #define COMMAND_HTTPSETUP (1 << 2)
 #define COMMAND_HTTPACTION (1 << 3)
+#define COMMAND_CCID (1 << 4)
+#define COMMAND_CIMI (1 << 5)
 // For anything else
 #define COMMAND_BUSY -1
 
@@ -81,7 +84,10 @@ int is_gprs_connected();
 int get_signal_strength();
 int get_last_error_command();
 void set_last_error_command(int command_id);
-// Do we need to get MNC?
+// 0=no signal, 1=one bar, 2=two bars etc, MAX 4
+int get_signal_strength_level();
+// -1=Unknown 0=China Unicom 1=China Mobile
+int get_network_operator();
 
 // Call from interrupt handler.
 // buf is result from port

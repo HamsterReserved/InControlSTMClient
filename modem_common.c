@@ -84,7 +84,7 @@ void request_reg_status() {
 
 void request_sim_status() {
     // Will this be ever used since there's signal strength?
-    send_command("AT+CCID\r");
+    send_command_with_id("AT+CCID\r",COMMAND_CCID);
 }
 
 void request_gprs_status() {
@@ -93,6 +93,10 @@ void request_gprs_status() {
 
 void request_connection_status() {
     send_command("AT+XIIC?\r");
+}
+
+void request_network_operator() {
+    send_command_with_id("AT+CIMI\r", COMMAND_CIMI);
 }
 
 void connect_to_network() {
@@ -140,9 +144,31 @@ int is_gprs_connected() { return modem_state >= MODEM_STATE_GPRS_CONNECTED; }
 
 int get_signal_strength() { return signal_strength; }
 
+int get_network_operator() { return network_operator; }
+
 int get_last_error_command() { return last_err_command; }
 
 void set_last_error_command(int command_id) { last_err_command = command_id; }
+
+// 0=no 1=1bar 2=2bar...
+int get_signal_strength_level() {
+    if (signal_strength < 4) {
+        // 4=-107dBm
+        return 1; 
+    } else if (signal_strength < 10) {
+        // 10=-93dBm
+        return 2;
+    } else if (signal_strength < 16) {
+        // 16=-71dBm
+        return 3;
+    } else if (signal_strength != 99) {
+        // 17+, 28=-57dBm
+        return 4;
+    } else {
+        // =99, none
+        return 0;
+    }
+}
 
 /* These process_*  are for internal use only. No need to spam header file. */
 void process_csq(const char* buf) {
@@ -154,7 +180,7 @@ void process_csq(const char* buf) {
     scan_count = sscanf(buf, "+CSQ: %d, %d", &signal, &ber); // Leave alone "OK"
     signal_strength = signal;
 
-    if (signal > 4) {
+    if (signal != 99) {
         modem_state |= MODEM_STATE_IN_SERVICE;
     } else {
         modem_state &= ~MODEM_STATE_IN_SERVICE;
@@ -166,6 +192,21 @@ void process_ccid(const char* buf) {
     // Don't care what ICCID is.
     // Otherwise only an "ERROR" and won't arrive here
     modem_state |= MODEM_STATE_SIM_PRESENT;
+}
+
+void process_cimi(const char* buf) {
+    char imsi[16] = ""; // max 15 digits + \0
+    sscanf(buf, "%s", imsi);
+    if (strncmp(imsi, "46000", 5) == 0 ||
+        strncmp(imsi, "46002", 5) == 0 ||
+        strncmp(imsi, "46007", 5) == 0) {
+        network_operator = 1; // China Mobile
+    } else if (stncmp(imsi, "46001", 5) == 0 ||
+        strncmp(imsi, "46010", 5) == 0) {
+        network_operator = 0; // China Unicom
+    } else {
+        network_operator = -1; // Unknown
+    }
 }
 
 void process_xiic(const char* buf) {
@@ -218,11 +259,20 @@ void process_error() {
     clear_command(last_command_id);
     switch (last_command_id) {
         // No need to set last_err_cmd to COMMAND_BUSY when last cmd is BUSY
+        // which means we don't care the command
         case COMMAND_CMGS:
         case COMMAND_HTTPACTION:
         case COMMAND_HTTPSETUP:
         case COMMAND_XIIC:
             set_last_error_command(last_command_id);
+            break;
+        case COMMAND_CCID:
+        case COMMAND_CIMI:
+            // no SIM card
+            if (modem_state >= MODEM_STATE_SIM_PRESENT) {
+                // clear all the flags
+                modem_state = MODEM_STATE_ON;
+            }
             break;
     }
 }
@@ -251,6 +301,8 @@ void process_result_common(const char* buf) {
         process_cmgs(buf);
     } else if (BUF_STRNCMP("+CREG") == 0) {
         process_creg(buf);
+    } else if (BUF_STRNCMP("+CIMI") == 0) {
+        process_cimi(buf);
     } else if (BUF_STRNCMP("+CGATT") == 0) {
         process_cgatt(buf);
     } else if (BUF_STRNCMP("+HTTPRECV") == 0) {
