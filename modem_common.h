@@ -72,6 +72,7 @@ void request_signal_strength();
 void request_reg_status();
 void request_sim_status();
 void request_gprs_status();
+void request_network_operator();
 void request_connection_status();
 void refresh_modem_status();
 void connect_to_network();

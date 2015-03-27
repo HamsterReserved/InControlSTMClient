@@ -98,7 +98,8 @@ void request_sim_status() {
 }
 
 void request_gprs_status() {
-    send_command("AT+CGATT?\r");
+    // send_command("AT+CGATT?\r");
+    // Not supported
 }
 
 void request_connection_status() {
@@ -146,11 +147,12 @@ void refresh_modem_status() {
     request_gprs_status();
 }
 
-int is_sim_present() { return modem_state >= MODEM_STATE_SIM_PRESENT; }
+// Without !=0, it will return 1<<2 etc
+int is_sim_present() { return modem_state & MODEM_STATE_SIM_PRESENT != 0; }
 
-int is_network_registered() { return modem_state >= MODEM_STATE_REGISTERED; }
+int is_network_registered() { return modem_state & MODEM_STATE_REGISTERED != 0; }
 
-int is_gprs_connected() { return modem_state >= MODEM_STATE_GPRS_CONNECTED; }
+int is_gprs_connected() { return modem_state & MODEM_STATE_GPRS_CONNECTED != 0; }
 
 int get_signal_strength() { return signal_strength; }
 
@@ -211,7 +213,7 @@ void process_cimi(const char* buf) {
         strncmp(imsi, "46002", 5) == 0 ||
         strncmp(imsi, "46007", 5) == 0) {
         network_operator = 1; // China Mobile
-    } else if (stncmp(imsi, "46001", 5) == 0 ||
+    } else if (strncmp(imsi, "46001", 5) == 0 ||
         strncmp(imsi, "46010", 5) == 0) {
         network_operator = 0; // China Unicom
     } else {
@@ -226,7 +228,7 @@ void process_xiic(const char* buf) {
     // OK
     int link_no = 0;
     char ip_buf[16] = "0.0.0.0"; // Max. 255.255.255.255 with 0
-    sscanf(buf, "+XIIC: %d, %s", &link_no, ip_buf);
+    sscanf(buf, "+XIIC: %d,%s", &link_no, ip_buf);
     if (ip_buf[0] == '0') { // First letter in IP MUST NOT BE 0
         modem_state &= ~MODEM_STATE_GPRS_CONNECTED;
     } else {
@@ -266,7 +268,6 @@ void process_cgatt(const char* buf) {
 
 void process_error() {
     log("ERROR returned for last command\n");
-    clear_command(last_command_id);
     switch (last_command_id) {
         // No need to set last_err_cmd to COMMAND_BUSY when last cmd is BUSY
         // which means we don't care the command
@@ -285,15 +286,30 @@ void process_error() {
             }
             break;
     }
+    clear_command(last_command_id);
 }
 
 void process_ok() {
     log("last command returns OK\n");
-    clear_command(last_command_id);
     set_last_error_command(COMMAND_NONE);
     process_http_ok();
     // I guess this should be NONE when the cmd is sent
     // and operations are atomic
+    clear_command(last_command_id);
+}
+
+void process_other(const char* buf) {
+    switch (last_command_id) {
+        case COMMAND_BUSY:
+            return; // Don't care
+        case COMMAND_CIMI:
+            // AT+CIMI
+            // 460000000000000
+            // (no +CIMI prefix)
+            process_cimi(buf);
+        case COMMAND_HTTPACTION:
+            process_http(buf);
+    }
 }
 
 void process_result_common(const char* buf) {
@@ -311,8 +327,6 @@ void process_result_common(const char* buf) {
         process_cmgs(buf);
     } else if (BUF_STRNCMP("+CREG") == 0) {
         process_creg(buf);
-    } else if (BUF_STRNCMP("+CIMI") == 0) {
-        process_cimi(buf);
     } else if (BUF_STRNCMP("+CGATT") == 0) {
         process_cgatt(buf);
     } else if (BUF_STRNCMP("+HTTPRECV") == 0) {
@@ -321,8 +335,8 @@ void process_result_common(const char* buf) {
         process_error();
     } else if (BUF_STRNCMP("OK") == 0) {
         process_ok();
-    } else { // Who knows? :-)
-        process_http(buf);
+    } else {
+        process_other(buf);
     }
     // Error mark is cleared in process_*
     update_display();

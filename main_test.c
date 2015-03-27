@@ -1,10 +1,10 @@
 
-
 #include "sms.h"
 #include "modem_common.h"
 #include "gprs_network.h"
 #include "sensor.h"
 #include "stub_stm32.h"
+#include <string.h>
 
 void test_sms() {
     SMS_SUBMIT_PARAM sms;
@@ -35,19 +35,24 @@ void test_gprs() {
 
     // Modem hardware
     request_connection_status();
-    clear_command(COMMAND_BUSY);
-    request_gprs_status();
-    clear_command(COMMAND_BUSY); // This will clear everything
+    process_result_common("+XIIC:   0,0.0.0.0\r\nOK\r\n");
+
+    // request_gprs_status(); // Not supported
+
     request_reg_status();
-    clear_command(COMMAND_BUSY);
+    process_result_common("+CREG: 0,0\r\nOK\r\n");
+
     request_signal_strength();
-    clear_command(COMMAND_BUSY);
+    process_result_common("+CSQ: 20,  99\r\nOK\r\n");
+
     request_sim_status();
-    clear_command(COMMAND_BUSY);
+    //process_result_common("+CCID: 89860\r\nOK\r\n");
+    process_result_common("ERROR\r\n");
 
     // GPRS
     request_self_name();
     clear_command(COMMAND_BUSY);
+
     request_sensor_list();
     clear_command(COMMAND_BUSY);
 
@@ -60,9 +65,16 @@ void test_gprs() {
     switch_state(STATE_NEW_CLIENT);
 }
 
+void test_operator() {
+    request_network_operator();
+    process_result_common("460010000000000\r\n");
+    get_network_operator();
+}
+
 int main() { // For test
     void on_init(); // stub_stm32.c
     on_init();
     test_sms();
     test_gprs();
+    test_operator();
 }
