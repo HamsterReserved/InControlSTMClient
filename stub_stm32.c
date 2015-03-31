@@ -4,15 +4,21 @@
  * If we are really onto STM32, these functions need to be
  * implemented.
  */
+#include "global_config.h"
 #include "stub_stm32.h"
 #include "sensor.h"
-#include "sys.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
-void delay(long mills) {
+#ifndef __WINDOWS__
+#include "sys.h"
+#endif
 
+void delay(long mills) {
+#ifndef __WINDOWS__
+    delayMS(mills);
+#endif
 }
 
 void read_device_id(char *buf) {
@@ -37,6 +43,10 @@ void update_display() {
 }
 
 long get_current_time() {
+#ifndef __WINDOWS__
     extern u32 timecount;
     return timecount;
+#else
+    return time(0);
+#endif
 }

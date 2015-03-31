@@ -38,12 +38,14 @@
 #include "modem_common.h"
 #include "modem_common_private.h"
 #include "gprs_network.h"
+
+#ifndef __WINDOWS__
 #include "sys.h"
+extern u8 SIM_SEN_Status_Dat[4];
+#endif
 
 // =0 means buf=a
 #define BUF_STRNCMP(a) (strncmp(buf, (a), strlen((a))))
-
-extern u8 SIM_SEN_Status_Dat[4];
 
 // Let others know if modem is living
 // State: see modem_common.h
@@ -151,11 +153,11 @@ void refresh_modem_status() {
 }
 
 // Without !=0, it will return 1<<2 etc
-int is_sim_present() { return modem_state & MODEM_STATE_SIM_PRESENT != 0; }
+int is_sim_present() { return (modem_state & MODEM_STATE_SIM_PRESENT) != 0; }
 
-int is_network_registered() { return modem_state & MODEM_STATE_REGISTERED != 0; }
+int is_network_registered() { return (modem_state & MODEM_STATE_REGISTERED) != 0; }
 
-int is_gprs_connected() { return modem_state & MODEM_STATE_GPRS_CONNECTED != 0; }
+int is_gprs_connected() { return (modem_state & MODEM_STATE_GPRS_CONNECTED) != 0; }
 
 int get_signal_strength() { return signal_strength; }
 
@@ -216,11 +218,15 @@ void process_cimi(const char* buf) {
         strncmp(imsi, "46002", 5) == 0 ||
         strncmp(imsi, "46007", 5) == 0) {
         network_operator = 1; // China Mobile
+#ifndef __WINDOWS__
 		SIM_SEN_Status_Dat[0]=2;
+#endif
     } else if (strncmp(imsi, "46001", 5) == 0 ||
         strncmp(imsi, "46010", 5) == 0) {
         network_operator = 0; // China Unicom
+#ifndef __WINDOWS__
 		SIM_SEN_Status_Dat[0]=1;
+#endif
     } else {
         network_operator = -1; // Unknown
     }
@@ -264,7 +270,9 @@ void process_creg(const char* buf) {
         modem_state |= MODEM_STATE_REGISTERED;
     } else {
         modem_state &= ~MODEM_STATE_REGISTERED;
+#ifndef __WINDOWS__
 		SIM_SEN_Status_Dat[0]=0;
+#endif
     }
 }
 

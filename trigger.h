@@ -5,6 +5,9 @@
 #ifndef TRIGGER_H
 #define TRIGGER_H
 
+#include "global_config.h"
+#include "sensor.h"
+
 // Target phone number
 #define TRIGGER_TARGET_BUFFER_SIZE 50
 // Not used. Make it smaller
@@ -31,9 +34,14 @@ typedef struct {
     int assoc_sensor_id;
 } TRIGGER_INFO;
 
+#ifdef USE_TRIGGER_ARRAY
 void trigger_array_init();
 void add_to_trigger(TRIGGER_INFO* trg);
 TRIGGER_INFO* get_trigger_at(int i);
 void add_to_trigger_with_string(const char* buf);
+#endif
 
+void build_into_trigger(TRIGGER_INFO* trg, const char* buf);
+void send_trigger_alert_sms(SENSOR_INFO* snr, TRIGGER_INFO* trg);
+void check_and_run_triggers(void);
 #endif

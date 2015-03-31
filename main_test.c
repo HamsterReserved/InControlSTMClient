@@ -4,6 +4,8 @@
 #include "gprs_network.h"
 #include "sensor.h"
 #include "stub_stm32.h"
+#include "trigger.h"
+
 #include <string.h>
 
 void test_sms() {
@@ -71,10 +73,19 @@ void test_operator() {
     get_network_operator();
 }
 
+void test_direct_trigger() {
+    TRIGGER_INFO trg;
+    trg.action = TRIGGER_ACTION_SEND_SMS;
+    trg.assoc_sensor_id = 0;
+    trg.compare_type = COMPARE_TYPE_GREATER_THAN;
+    trg.compare_value = 122;
+    strcpy(trg.target, "15527270000");
+    send_trigger_alert_sms(get_sensor_at(0), &trg);
+}
 int main() { // For test
-    void on_init(); // stub_stm32.c
-    on_init();
+    sensor_array_init();
     test_sms();
     test_gprs();
     test_operator();
+    test_direct_trigger();
 }

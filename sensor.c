@@ -46,5 +46,7 @@ void sensor_array_init() {
     }
     // TODO we should not initialize trigger array here
     // but I can't change STM32 code
+#ifdef USE_TRIGGER_ARRAY
     trigger_array_init();
+#endif
 }

@@ -83,6 +83,7 @@
     <ClCompile Include="sensor.c" />
     <ClCompile Include="sms.c" />
     <ClCompile Include="stub_stm32.c" />
+    <ClCompile Include="trigger.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global_config.h" />
@@ -91,8 +92,11 @@
     <ClInclude Include="modem_common.h" />
     <ClInclude Include="modem_common_private.h" />
     <ClInclude Include="sensor.h" />
+    <ClInclude Include="sensor_private.h" />
     <ClInclude Include="sms.h" />
     <ClInclude Include="stub_stm32.h" />
+    <ClInclude Include="trigger.h" />
+    <ClInclude Include="trigger_private.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

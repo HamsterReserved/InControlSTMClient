@@ -209,7 +209,9 @@ void process_sensor_list(const char* buf) {
         // Single sensor
         sscanf(buf, "%d,%s,%s", &id, name, trigger);
         add_to_sensors_with_attr(id, name, trigger, SENSOR_TYPE_LIGHT, 0);
+#ifdef USE_TRIGGER_ARRAY
         add_to_trigger_with_string(trigger);
+#endif
         // Default value
     } else {
         // TODO this produces a warning. Does strtok write to 1st param?
@@ -217,7 +219,9 @@ void process_sensor_list(const char* buf) {
         do {
             sscanf(now_pos, "%d,%s,%s", &id, name, trigger);
             add_to_sensors_with_attr(id, name, trigger, SENSOR_TYPE_LIGHT, 0);
+#ifdef USE_TRIGGER_ARRAY
             add_to_trigger_with_string(trigger);
+#endif
         } while (now_pos = strtok(NULL, "&"));
     }
     set_last_err_request(REQUEST_TYPE_NONE);

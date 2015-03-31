@@ -49,7 +49,7 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
     int content_length = strlen(sms->content);
     char content_length_buffer[3]; // With 0x00 end. Max. 70 in decimal
     int head_length = 0;
-    char head_length_buffer[3]; // With 0x00 end
+    char head_length_buffer[10]; // With 0x00 end
     
     char end_of_message[] = {0x0A, 0x00}; // 0x00 is string end
     
@@ -62,7 +62,7 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
         memset(content_length_buffer, 0, 3);
         memset(head_length_buffer, 0, 3);
         
-        if (sms->service_center != NULL) { // Specificed message center
+        if (sms->service_center != NULL && sms->service_center[0] != 0) { // Specificed message center
             strcat(service_number_buffer, "0891"); // Center number length(8) and "+"
             invert_number_string(service_number_buffer + 4, sms->service_center + 1); // Skip the first 0891 and +
         } else {
@@ -144,4 +144,23 @@ int check_if_chinese_character(const char* in_str) {
 */
 void ucs2_encode_string(char* out, const char* in) {
     out = (char*) in;
+}
+
+/*
+ English only. eg. "0" -> "48"
+ Maybe not needed as we use TEXT mode to send English msgs
+*/
+void ascii_encode_string(char* out, const char* in) {
+    char char_table[] = "0123456789ABCDEF";
+    int i = 0;
+    char tmp;
+    char append_buf[3]; // eg. 0->48, 4-8-\0
+
+    out[0] = 0;
+    while (tmp = in[i++]) {
+        append_buf[2] = 0;
+        append_buf[0] = char_table[tmp / 16];
+        append_buf[1] = char_table[tmp % 16];
+        strcat(out, append_buf);
+    }
 }

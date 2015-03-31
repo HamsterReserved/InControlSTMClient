@@ -26,4 +26,5 @@ void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms);
 void invert_number_string(char* dest, const char* src);
 void send_command(const char* buf);
 int check_if_chinese_character(const char* in_str);
+void ascii_encode_string(char* out, const char* in);
 #endif /* SMS_H_ */
