@@ -15,11 +15,11 @@
 #include <string.h>
 #include <stdio.h>
 
-/************************************************************************/
-/* Invert a byte array ((+) 86 15 52 72 70 00 0F -> 68 51 25 27 07 00 F0)
-/* NOTE! 15527270000 is TEXT!
-/* And this function does STRCPY as well
-/************************************************************************/
+/*************************************************************************/
+/* Invert a byte array ((+) 86 15 52 72 70 00 0F -> 68 51 25 27 07 00 F0)*/
+/* NOTE! 15527270000 is TEXT!                                            */
+/* And this function does STRCPY as well                                 */
+/*************************************************************************/
 void invert_number_string(char* dest, const char* src) {
     int s_len = strlen(src);
     int cur_pos = 0;
@@ -36,8 +36,8 @@ void invert_number_string(char* dest, const char* src) {
 }
 
 /************************************************************************/
-/* Build a PDU into (param)buffer
-/* First paramtere is not used... this function sends it.
+/* Build a PDU into (param)buffer                                       */
+/* First paramtere is not used... this function sends it.               */
 /************************************************************************/
 void send_sms(char* buffer, SMS_SUBMIT_PARAM* sms) {
     char pdu_head[PDU_HEAD_BUFFER_SIZE];

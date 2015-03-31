@@ -68,27 +68,27 @@ void send_command_with_id(const char* buf, int custom_command_id);
 // Remember to set_command
 void send_text(const char* buf);
 
-void request_signal_strength();
-void request_reg_status();
-void request_sim_status();
-void request_gprs_status();
-void request_network_operator();
-void request_connection_status();
-void refresh_modem_status();
-void connect_to_network();
-void disconnect_from_network();
+void request_signal_strength(void);
+void request_reg_status(void);
+void request_sim_status(void);
+void request_gprs_status(void);
+void request_network_operator(void);
+void request_connection_status(void);
+void refresh_modem_status(void);
+void connect_to_network(void);
+void disconnect_from_network(void);
 
 // OOP?
-int is_sim_present();
-int is_network_registered();
-int is_gprs_connected();
-int get_signal_strength();
-int get_last_error_command();
+int is_sim_present(void);
+int is_network_registered(void);
+int is_gprs_connected(void);
+int get_signal_strength(void);
+int get_last_error_command(void);
 void set_last_error_command(int command_id);
 // 0=no signal, 1=one bar, 2=two bars etc, MAX 4
-int get_signal_strength_level();
+int get_signal_strength_level(void);
 // -1=Unknown 0=China Unicom 1=China Mobile
-int get_network_operator();
+int get_network_operator(void);
 
 // Call from interrupt handler.
 // buf is result from port

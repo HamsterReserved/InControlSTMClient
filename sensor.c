@@ -1,6 +1,11 @@
 // Utils about sensor
 #include "sensor.h"
 
+// Is this memory costly?
+// If sensor_id == 0, means this array's content has come to an end.
+// Like char name[100]="ImThisShortComeToBeatMe";
+SENSOR_INFO sensors[MAX_SENSORS_COUNT];
+
 void add_to_sensors(SENSOR_INFO* snr) {
     int i = 0;
     for (; i < MAX_SENSORS_COUNT && 
@@ -26,4 +31,20 @@ void add_to_sensors_with_attr(int id, char* name, char* trigger, int type, int v
     snr.sensor_value = value;
 
     add_to_sensors(&snr);
+}
+
+SENSOR_INFO* get_sensor_at(int i) {
+	return &sensors[i];
+}
+
+void sensor_array_init() {
+    // initialize sensors array
+    int i = 0;
+    for (; i <= MAX_SENSORS_COUNT; i++) {
+        sensors[i].sensor_id = i + 1;
+        sensors[i].sensor_name[0] = 0;
+        sensors[i].sensor_trigger[0] = 0;
+        sensors[i].sensor_type = SENSOR_TYPE_LIGHT;
+        sensors[i].sensor_value = 0;
+    }
 }

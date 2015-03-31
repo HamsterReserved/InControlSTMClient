@@ -9,6 +9,6 @@
 #define GLOBAL_CONFIG_H
 
 #define DEBUG
-#define LOG_ENABLED
+//#define LOG_ENABLED
 
 #endif

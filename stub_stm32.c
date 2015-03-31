@@ -6,6 +6,7 @@
  */
 #include "stub_stm32.h"
 #include "sensor.h"
+#include "sys.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -36,17 +37,6 @@ void update_display() {
 }
 
 long get_current_time() {
-    return time(0);
-}
-
-void on_init() {
-    // initialize sensors array
-    int i = 0;
-    for (; i < MAX_SENSORS_COUNT; i++) {
-        sensors[i].sensor_id = 0;
-        sensors[i].sensor_name[0] = 0;
-        sensors[i].sensor_trigger[0] = 0;
-        sensors[i].sensor_type = SENSOR_TYPE_LIGHT;
-        sensors[i].sensor_value = 0;
-    }
+    extern u32 timecount;
+    return timecount;
 }

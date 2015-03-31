@@ -46,8 +46,8 @@ void test_gprs() {
     process_result_common("+CSQ: 20,  99\r\nOK\r\n");
 
     request_sim_status();
-    //process_result_common("+CCID: 89860\r\nOK\r\n");
-    process_result_common("ERROR\r\n");
+    process_result_common("+CCID: 89860002190810000000\r\nOK\r\n");
+    //process_result_common("ERROR\r\n");
 
     // GPRS
     request_self_name();

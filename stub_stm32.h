@@ -14,7 +14,7 @@ void delay(long mills);
 // Read device ID into buf
 void read_device_id(char* buf);
 void log(const char* logstr);
-void update_display();
+void update_display(void);
 
-long get_current_time();
+long get_current_time(void);
 #endif

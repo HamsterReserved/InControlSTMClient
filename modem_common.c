@@ -38,9 +38,12 @@
 #include "modem_common.h"
 #include "modem_common_private.h"
 #include "gprs_network.h"
+#include "sys.h"
 
 // =0 means buf=a
 #define BUF_STRNCMP(a) (strncmp(buf, (a), strlen((a))))
+
+extern u8 SIM_SEN_Status_Dat[4];
 
 // Let others know if modem is living
 // State: see modem_common.h
@@ -213,9 +216,11 @@ void process_cimi(const char* buf) {
         strncmp(imsi, "46002", 5) == 0 ||
         strncmp(imsi, "46007", 5) == 0) {
         network_operator = 1; // China Mobile
+		SIM_SEN_Status_Dat[0]=2;
     } else if (strncmp(imsi, "46001", 5) == 0 ||
         strncmp(imsi, "46010", 5) == 0) {
         network_operator = 0; // China Unicom
+		SIM_SEN_Status_Dat[0]=1;
     } else {
         network_operator = -1; // Unknown
     }
@@ -259,6 +264,7 @@ void process_creg(const char* buf) {
         modem_state |= MODEM_STATE_REGISTERED;
     } else {
         modem_state &= ~MODEM_STATE_REGISTERED;
+		SIM_SEN_Status_Dat[0]=0;
     }
 }
 
