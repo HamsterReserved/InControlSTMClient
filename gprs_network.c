@@ -34,6 +34,7 @@
 #include "gprs_network_private.h"
 #include "modem_common.h"
 #include "sensor.h"
+#include "trigger.h"
 
 #include <string.h>
 
@@ -204,18 +205,20 @@ void process_sensor_list(const char* buf) {
     char name[SENSOR_NAME_BUFFER_SIZE] = "";
     char trigger[SENSOR_TRIGGER_BUFFER_SIZE] = "";
 
-    if (strstr(buf, "|") == NULL) {
+    if (strstr(buf, "&") == NULL) {
         // Single sensor
         sscanf(buf, "%d,%s,%s", &id, name, trigger);
         add_to_sensors_with_attr(id, name, trigger, SENSOR_TYPE_LIGHT, 0);
+        add_to_trigger_with_string(trigger);
         // Default value
     } else {
         // TODO this produces a warning. Does strtok write to 1st param?
-        now_pos = strtok((char*)buf, "|");
+        now_pos = strtok((char*)buf, "&");
         do {
             sscanf(now_pos, "%d,%s,%s", &id, name, trigger);
             add_to_sensors_with_attr(id, name, trigger, SENSOR_TYPE_LIGHT, 0);
-        } while (now_pos = strtok(NULL, "|"));
+            add_to_trigger_with_string(trigger);
+        } while (now_pos = strtok(NULL, "&"));
     }
     set_last_err_request(REQUEST_TYPE_NONE);
 }

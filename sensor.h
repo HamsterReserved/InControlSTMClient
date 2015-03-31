@@ -15,6 +15,9 @@
 #define SENSOR_TRIGGER_BUFFER_SIZE 500
 #define MAX_SENSORS_COUNT 15
 
+// Not used
+#define SENSOR_ID_INVALID -1
+
 typedef struct {
     int sensor_id;
     int sensor_type;
@@ -22,8 +25,6 @@ typedef struct {
     int sensor_value;
     char sensor_trigger[SENSOR_TRIGGER_BUFFER_SIZE];
 } SENSOR_INFO;
-
-
 
 // Add a new sensor to sensors array
 // Auto determines replace or add new
@@ -34,4 +35,4 @@ void add_to_sensors_with_attr(int id, char* name, char* trigger, int type, int v
 
 SENSOR_INFO* get_sensor_at(int i);
 void sensor_array_init(void);
-#endif 
+#endif

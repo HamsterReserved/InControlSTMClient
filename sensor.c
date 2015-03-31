@@ -1,10 +1,7 @@
 // Utils about sensor
 #include "sensor.h"
-
-// Is this memory costly?
-// If sensor_id == 0, means this array's content has come to an end.
-// Like char name[100]="ImThisShortComeToBeatMe";
-SENSOR_INFO sensors[MAX_SENSORS_COUNT];
+#include "trigger.h"
+#include "sensor_private.h"
 
 void add_to_sensors(SENSOR_INFO* snr) {
     int i = 0;
@@ -47,4 +44,7 @@ void sensor_array_init() {
         sensors[i].sensor_type = SENSOR_TYPE_LIGHT;
         sensors[i].sensor_value = 0;
     }
+    // TODO we should not initialize trigger array here
+    // but I can't change STM32 code
+    trigger_array_init();
 }
